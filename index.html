@@ -22,6 +22,8 @@ button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border
 
 .card-title{font-weight:bold;color:#ff4d6d;margin-bottom:10px;}
 
+.filter-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;} .filter-btns button{padding:8px 10px;border:none;border-radius:6px;background:#1a1a1a;color:white;cursor:pointer;} .filter-btns button.active{background:#ef233c;}
+
 </style>
 </head>
 <body><h1>⚽ ELITE EFOOTBALL LEAGUE PRO</h1><div class="nav">
@@ -44,7 +46,7 @@ button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border
 <div class="card">
 <button class="main" onclick="generateFixtures()">Generate FULL Season Fixtures</button>
 </div>
-<div class="card" id="fixtureList"></div>
+<div id="fixtureList" class="card"></div>
 </div><!-- SUBMIT --><div id="submit" class="section">
 <div class="card">
 <input id="t1" placeholder="Team 1">
@@ -58,8 +60,11 @@ button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border
 <label class="file-label">📸 Choose Screenshot<input type="file" hidden></label>
 <button class="main" onclick="send()">Send to WhatsApp</button>
 </div>
-</div><!-- MATCHDAY CARDS --><div id="matchdays" class="section">
-<div class="card" id="cards"></div>
+</div><!-- MATCHDAYS --><div id="matchdays" class="section">
+<div class="card">
+<div class="filter-btns" id="filters"></div>
+<div id="cards"></div>
+</div>
 </div><script>
 
 const ADMIN="254746496906";
@@ -72,20 +77,21 @@ const teams=[
 ];
 
 let data={},history=[],lastPos={};
-
 teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0});
 
-let matchday1=[
+/* FIXED RESULTS */
+let results=[
 ["DERICK MULTITASKER","CKEVO",1,0],
 ["ALVARO CARERAS","MUFASA",3,0],
 ["CENTRYGAMER","ABDNSR",3,0],
-["BLACK ROSE","ROMTETENASI",9,0]
+["BLACK ROSE","ROMTETENASI",9,0],
+["IBRAAH","CRIEZ16",3,0]
 ];
 
-function applyMatchday1(){
+function applyResults(){
 let played=new Set();
 
-matchday1.forEach(r=>{
+results.forEach(r=>{
 let [a,b,sa,sb]=r;
 update(a,b,sa,sb,"MATCHDAY 1");
 played.add(a);played.add(b);
@@ -130,35 +136,71 @@ t.innerHTML+=`<tr>
 });
 }
 
-function buildMatchdayCards(){
-let c=document.getElementById("cards");
-c.innerHTML="";
-
-let grouped={};
-
-history.forEach(h=>{
-let md=h.includes("MATCHDAY 1")?"MATCHDAY 1":"OTHER";
-if(!grouped[md]) grouped[md]=[];
-grouped[md].push(h);
-});
-
-Object.keys(grouped).forEach(md=>{
-c.innerHTML+=`
-<div class='card'>
-<div class='card-title'>${md} - COMPLETED</div>
-${grouped[md].map(m=>`<div class='match'>${m}</div>`).join('')}
-<div class='matchday-title'>STATUS: LOCKED ✅</div>
-</div>`;
-});
-}
+/* FULL SEASON FIXTURES (HOME & AWAY) */
+let fullFixtures=[];
 
 function generateFixtures(){
 let list=[...teams];
+let rounds=[];
+let n=list.length;
+
+for(let r=0;r<n-1;r++){
+let round=[];
+for(let i=0;i<n/2;i++){
+round.push(`${list[i]} vs ${list[n-1-i]}`);
+}
+rounds.push(round);
+list.splice(1,0,list.pop());
+}
+
+let returnRounds=rounds.map(r=>r.map(m=>{
+let [a,b]=m.split(" vs ");
+return `${b} vs ${a}`;
+}));
+
+fullFixtures=[...rounds,...returnRounds];
+
+renderFixtures();
+renderMatchdays();
+}
+
+function renderFixtures(){
 let box=document.getElementById("fixtureList");
 box.innerHTML="";
-for(let i=0;i<list.length/2;i++){
-box.innerHTML+=`<div class='match'>${list[i]} vs ${list[list.length-1-i]}</div>`;
+
+fullFixtures.forEach((r,i)=>{
+box.innerHTML+=`<div class='match'><b>Matchday ${i+1}</b></div>`;
+r.forEach(m=>box.innerHTML+=`<div class='match'>${m}</div>`);
+});
 }
+
+function renderMatchdays(){
+let f=document.getElementById("filters");
+f.innerHTML="";
+
+for(let i=1;i<=fullFixtures.length;i++){
+f.innerHTML+=`<button onclick="showMD(${i})">MD ${i}</button>`;
+}
+
+showMD(1);
+}
+
+function showMD(n){
+document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));
+
+let btn=[...document.querySelectorAll('#filters button')][n-1];
+if(btn) btn.classList.add('active');
+
+let c=document.getElementById("cards");
+c.innerHTML="";
+
+let mdMatches=history.filter(h=>h.includes("MATCHDAY 1"));
+
+c.innerHTML=`<div class='card'>
+<div class='card-title'>MATCHDAY 1</div>
+${mdMatches.map(m=>`<div class='match'>${m}</div>`).join('')}
+<div class='matchday-title'>STATUS: COMPLETED ✅</div>
+</div>`;
 }
 
 function send(){
@@ -177,9 +219,9 @@ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')
 btn.classList.add('active');
 }
 
-applyMatchday1();
+applyResults();
 renderTable();
-buildMatchdayCards();
+generateFixtures();
 
 </script></body>
 </html>
