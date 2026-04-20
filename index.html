@@ -1,27 +1,36 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ELITE EFOOTBALL LEAGUE PRO</title>
-<style>
-body{margin:0;font-family:Arial;background:#0b1220;color:white;}
-h1{background:linear-gradient(90deg,#ef233c,#ff4d6d);padding:15px;text-align:center;margin:0;}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELITE EFOOTBALL LEAGUE PRO</title><style>
+body{margin:0;font-family:Arial;background:#0b1220;color:#fff;}
+h1{margin:0;text-align:center;padding:15px;background:linear-gradient(90deg,#ef233c,#ff4d6d);}
+
 .nav{display:flex;background:#111;}
-.nav button{flex:1;padding:12px;border:none;background:none;color:white;font-weight:bold;cursor:pointer;}
+.nav button{flex:1;padding:12px;border:none;background:none;color:#fff;font-weight:bold;cursor:pointer;}
 .nav button.active{background:#ef233c;}
+
 .section{display:none;padding:15px;}
 .active{display:block;}
-.card{background:#111;padding:15px;margin:10px 0;border-radius:10px;}
+
+.card{background:#111;padding:15px;border-radius:10px;margin:10px 0;}
+
 table{width:100%;border-collapse:collapse;}
 th,td{padding:10px;border-bottom:1px solid #333;text-align:center;white-space:nowrap;}
 td:first-child{text-align:left;}
+
 .match{background:#1a1a1a;padding:10px;margin:5px 0;border-left:3px solid #ef233c;border-radius:6px;}
 .matchday-title{color:#ff4d6d;font-weight:bold;margin:10px 0;}
-input,select{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:none;background:#0b1220;color:white;}
-button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border:none;padding:12px;width:100%;border-radius:8px;font-weight:bold;cursor:pointer;}
-</style>
-</head>
+
+input,select{width:100%;padding:10px;margin:5px 0;border:none;border-radius:6px;background:#0b1220;color:#fff;}
+
+button.main{width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(90deg,#ef233c,#ff4d6d);color:#fff;font-weight:bold;cursor:pointer;}
+
+#mdSelectWrap,#fixtureBox{display:none;}
+
+</style></head>
 <body><h1>⚽ ELITE EFOOTBALL LEAGUE PRO</h1><div class="nav">
-<button onclick="show('standings',this)" class="active">Standings</button>
+<button class="active" onclick="show('standings',this)">Standings</button>
 <button onclick="show('fixtures',this)">Fixtures</button>
 <button onclick="show('submit',this)">Submit</button>
 </div><!-- STANDINGS --><div id="standings" class="section active">
@@ -35,22 +44,18 @@ button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border
 <tbody id="table"></tbody>
 </table>
 </div>
-</div><!-- FIXTURES --><div id="fixtures" class="section">
-<div class="card">
+</div><!-- FIXTURES --><div id="fixtures" class="section"><div class="card">
 <button class="main" onclick="generateFixtures()">Generate Season Fixtures</button>
-</div><div class="card">
+</div><div class="card" id="mdSelectWrap">
 <label>Select Matchday</label>
 <select id="mdSelect" onchange="renderFixtures()"></select>
-</div><div class="card" id="fixtureList"></div>
-</div><!-- SUBMIT --><div id="submit" class="section">
+</div><div class="card" id="fixtureBox"></div></div><!-- SUBMIT --><div id="submit" class="section">
 <div class="card">
 <input id="t1" placeholder="Team 1">
 <input id="t2" placeholder="Team 2">
 <input id="s1" placeholder="Score 1">
 <input id="s2" placeholder="Score 2">
-<select id="md">
-<option>Select Matchday</option>
-</select>
+<select id="md"></select>
 <button class="main" onclick="submitResult()">Update Result</button>
 </div>
 </div><script>
@@ -62,17 +67,44 @@ const teams=[
 "DERICK MULTITASKER","HUNTER LOVE"
 ];
 
-let data={},fixtures=[];
+let data={},fixtures=[],generated=false;
 
 teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0});
 
+/* MATCHDAY 1 RESULTS */
+let results=[
+["DERICK MULTITASKER","CKEVO",1,0],
+["ALVARO CARERAS","MUFASA",3,0],
+["CENTRYGAMER","ABDNSR",3,0],
+["BLACK ROSE","ROMTETENASI",9,0],
+["IBRAAH","CRIEZ16",3,0]
+];
+
+function applyResults(){
+results.forEach(r=>update(r[0],r[1],r[2],r[3]));
+}
+
+function update(a,b,sa,sb){
+if(!data[a]||!data[b]) return;
+
+data[a].P++;data[b].P++;
+data[a].GF+=sa;data[a].GA+=sb;
+data[b].GF+=sb;data[b].GA+=sa;
+
+if(sa>sb){data[a].W++;data[a].PTS+=3;data[b].L++;}
+else if(sb>sa){data[b].W++;data[b].PTS+=3;data[a].L++;}
+else{data[a].D++;data[b].D++;data[a].PTS++;data[b].PTS++;}
+}
+
 function renderTable(){
-let table=document.getElementById("table");
-table.innerHTML="";
-let sorted=Object.entries(data).sort((a,b)=>b[1].PTS-a[1].PTS || (b[1].GF-b[1].GA)-(a[1].GF-a[1].GA));
-sorted.forEach(([n,s])=>{
+let t=document.getElementById("table");
+t.innerHTML="";
+
+Object.entries(data)
+.sort((a,b)=>b[1].PTS-a[1].PTS || (b[1].GF-b[1].GA)-(a[1].GF-a[1].GA))
+.forEach(([n,s])=>{
 let gd=s.GF-s.GA;
-table.innerHTML+=`<tr><td>${n}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${gd}</td><td>${s.PTS}</td></tr>`;
+t.innerHTML+=`<tr><td>${n}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${gd}</td><td>${s.PTS}</td></tr>`;
 });
 }
 
@@ -91,53 +123,43 @@ list.splice(1,0,list.pop());
 }
 
 fixtures=rounds;
+generated=true;
 
-let mdSel=document.getElementById("mdSelect");
-let subSel=document.getElementById("md");
-mdSel.innerHTML="";
-subSel.innerHTML="<option>Select Matchday</option>";
+document.getElementById("mdSelectWrap").style.display="block";
+document.getElementById("fixtureBox").style.display="block";
+
+let md=document.getElementById("mdSelect");
+let sub=document.getElementById("md");
+md.innerHTML="";
+sub.innerHTML="<option>Select Matchday</option>";
 
 for(let i=1;i<=fixtures.length;i++){
-mdSel.innerHTML+=`<option value="${i}">Matchday ${i}</option>`;
-subSel.innerHTML+=`<option>${i}</option>`;
+md.innerHTML+=`<option value="${i}">Matchday ${i}</option>`;
+sub.innerHTML+=`<option>${i}</option>`;
 }
 
 renderFixtures();
 }
 
 function renderFixtures(){
-if(fixtures.length==0) return;
-
-let md=parseInt(document.getElementById("mdSelect").value);
-if(!md) md=1;
-
-let box=document.getElementById("fixtureList");
+if(!generated) return;
+let md=parseInt(document.getElementById("mdSelect").value)||1;
+let box=document.getElementById("fixtureBox");
 box.innerHTML="";
 
 box.innerHTML+=`<div class='matchday-title'>MATCHDAY ${md}</div>`;
-
-fixtures[md-1].forEach(m=>{
-box.innerHTML+=`<div class='match'>${m}</div>`;
-});
+fixtures[md-1].forEach(m=>box.innerHTML+=`<div class='match'>${m}</div>`);
 }
 
 function submitResult(){
-let a=document.getElementById("t1").value;
-let b=document.getElementById("t2").value;
-let sa=parseInt(document.getElementById("s1").value);
-let sb=parseInt(document.getElementById("s2").value);
-
-if(!data[a]||!data[b]) return alert("Invalid teams");
-
-data[a].P++;data[b].P++;
-data[a].GF+=sa;data[a].GA+=sb;
-data[b].GF+=sb;data[b].GA+=sa;
-
-if(sa>sb){data[a].W++;data[a].PTS+=3;data[b].L++;}
-else if(sb>sa){data[b].W++;data[b].PTS+=3;data[a].L++;}
-else{data[a].D++;data[b].D++;data[a].PTS++;data[b].PTS++;}
-
+update(
+ document.getElementById("t1").value,
+ document.getElementById("t2").value,
+ parseInt(document.getElementById("s1").value),
+ parseInt(document.getElementById("s2").value)
+);
 renderTable();
+alert("Updated ✅");
 }
 
 function show(id,btn){
@@ -147,6 +169,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')
 btn.classList.add('active');
 }
 
+applyResults();
 renderTable();
 
 </script></body>
