@@ -204,9 +204,10 @@ function generateFixtures(){
   });
 }
 
-// Seed initial results and render
-seedMatchday1();
-render();
-renderHistory();
+document.addEventListener('DOMContentLoaded', ()=>{
+  seedMatchday1();
+  render();
+  renderHistory();
+});
 </script></body>
 </html>
