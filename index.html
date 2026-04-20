@@ -36,61 +36,52 @@ td:first-child{ text-align:left; padding-left:20px; }
 
 .avatar{ width:28px;height:28px; border-radius:50%; background:#ef233c; display:flex; align-items:center; justify-content:center; font-weight:800; }
 
+.form{ font-weight:800; letter-spacing:1px; }
+
 input{ padding:8px; margin:5px; border-radius:6px; border:none; }
 
 button{ padding:10px 16px; background:#ef233c; border:none; color:white; border-radius:8px; cursor:pointer; font-weight:800; }
 
-.matchday{ margin-top:15px; color:#ef233c; font-weight:800; }
-
 .match{ padding:6px 0; border-bottom:1px solid #1f2a44; }
 
-.upload-box{ display:flex; flex-direction:column; gap:10px; }
-
-.preview{ background:#111827; padding:10px; border-radius:10px; } </style>
+.upload-box{ display:flex; flex-direction:column; gap:10px; } </style>
 
 </head>
 <body><div class="topbar">
-    <div>⚽ FIFA STYLE LEAGUE SYSTEM</div>
+    <div>⚽ ELITE EFOOTBALL LEAGUE</div>
     <div class="live">LIVE</div>
 </div><div class="nav">
     <button class="active" onclick="show('standings')">Standings</button>
     <button onclick="show('fixtures')">Fixtures</button>
     <button onclick="show('submit')">Submit Result</button>
-    <button onclick="show('admin')">Admin Panel</button>
-</div><!-- STANDINGS --><div id="standings" class="section active">
+</div><div id="standings" class="section active">
 <h2 style="text-align:center;">League Table</h2>
 <table>
 <thead>
 <tr>
-<th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
+<th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>
 </tr>
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
-</div><!-- FIXTURES --><div id="fixtures" class="section">
+</div><div id="fixtures" class="section">
 <h2 style="text-align:center;">Fixture Schedule</h2>
 <div class="card">
 <button onclick="generateFixtures()">Generate Season</button>
 </div>
 <div id="fixtureList"></div>
-</div><!-- SUBMIT RESULT (PLAYERS) --><div id="submit" class="section">
+</div><div id="submit" class="section">
 <h2 style="text-align:center;">Submit Match Result</h2>
 <div class="card upload-box">
-<input placeholder="Your Team Name" id="t1">
-<input placeholder="Opponent Team Name" id="t2">
-<input placeholder="Your Score" id="s1">
-<input placeholder="Opponent Score" id="s2"><h3>Upload Screenshot (Proof)</h3>
-<input type="file" id="proof"><button onclick="submitResult()">Submit for Review</button>
+<input id="t1" placeholder="Your Team">
+<input id="t2" placeholder="Opponent Team">
+<input id="s1" placeholder="Your Score">
+<input id="s2" placeholder="Opponent Score"><h3>Upload Screenshot</h3>
+<input type="file" id="proof"><button onclick="sendWhatsApp()">Send to Admin on WhatsApp</button>
 
 </div>
-</div><!-- ADMIN --><div id="admin" class="section">
-<h2 style="text-align:center;">Admin Review Panel</h2>
-<div class="card">
-<p>Submitted results will appear here (mock system)</p>
-<div id="adminList"></div>
-</div>
 </div><script>
-const ADMIN_PASSWORD="1234";
+const ADMIN_NUMBER="254746496906";
 
 const teams=[
 "KUKI NAPOLI","CKEVO","ROMTETENASI","ABDNSR","IBRAAH","ALVARO CARERAS",
@@ -98,9 +89,7 @@ const teams=[
 ];
 
 let players={};
-teams.forEach(t=>players[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0});
-
-let submissions=[];
+teams.forEach(t=>players[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0,form:[]});
 
 function show(id){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -109,60 +98,24 @@ function show(id){
     event.target.classList.add('active');
 }
 
-function submitResult(){
-    let data={
-        t1:document.getElementById("t1").value,
-        t2:document.getElementById("t2").value,
-        s1:document.getElementById("s1").value,
-        s2:document.getElementById("s2").value,
-        proof:document.getElementById("proof").files[0]?.name || "No image",
-        status:"Pending"
-    };
+function sendWhatsApp(){
+    let t1=document.getElementById("t1").value;
+    let t2=document.getElementById("t2").value;
+    let s1=document.getElementById("s1").value;
+    let s2=document.getElementById("s2").value;
 
-    submissions.push(data);
-    alert("Submitted! Waiting for admin approval.");
-    renderAdmin();
+    let file=document.getElementById("proof").files[0];
+    let fileName=file?file.name:"No screenshot";
+
+    let msg=`⚽ MATCH RESULT\n${t1} ${s1} - ${s2} ${t2}\n📸 ${fileName}`;
+    let url=`https://wa.me/${ADMIN_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url,"_blank");
 }
 
-function renderAdmin(){
-    let box=document.getElementById("adminList");
-    box.innerHTML="";
-
-    submissions.forEach((s,i)=>{
-        box.innerHTML+=`
-        <div class='preview'>
-        <b>${s.t1} ${s.s1} - ${s.s2} ${s.t2}</b><br>
-        Proof: ${s.proof}<br>
-        Status: ${s.status}<br>
-        <button onclick="approve(${i})">Approve</button>
-        </div>
-        `;
-    });
-}
-
-function approve(i){
-    let m=submissions[i];
-
-    let p1=players[m.t1];
-    let p2=players[m.t2];
-
-    if(!p1||!p2){alert("Invalid teams");return;}
-
-    let s1=Number(m.s1);
-    let s2=Number(m.s2);
-
-    p1.P++;p2.P++;
-    p1.GF+=s1;p1.GA+=s2;
-    p2.GF+=s2;p2.GA+=s1;
-
-    if(s1>s2){p1.W++;p2.L++;p1.Pts+=3;}
-    else if(s2>s1){p2.W++;p1.L++;p2.Pts+=3;}
-    else{p1.D++;p2.D++;p1.Pts++;p2.Pts++;}
-
-    m.status="Approved";
-
-    render();
-    renderAdmin();
+function updateForm(team,res){
+    let f=players[team].form;
+    f.unshift(res);
+    if(f.length>5) f.pop();
 }
 
 function render(){
@@ -173,11 +126,14 @@ function render(){
 
     sorted.forEach(([n,s])=>{
         let gd=s.GF-s.GA;
+        let form=s.form.join('')||"-";
+
         body.innerHTML+=`
         <tr>
         <td><div class='player'><div class='avatar'>${n[0]}</div>${n}</div></td>
         <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
         <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td><b>${s.Pts}</b></td>
+        <td class='form'>${form}</td>
         </tr>`;
     });
 }
@@ -210,4 +166,4 @@ function generateFixtures(){
 
 render();
 </script></body>
-</html>
+    </html>
