@@ -44,7 +44,7 @@ input,select{ width:100%; padding:10px; margin:6px 0; border:none; border-radius
 
 button{ width:100%; padding:12px; background:linear-gradient(90deg,#ef233c,#ff4d6d); border:none; color:white; font-weight:900; border-radius:10px; cursor:pointer; }
 
-/* FILE UPLOAD FIX */ input[type="file"]{ display:none; }
+input[type=file]{display:none;}
 
 .file-wrapper{ display:flex; flex-direction:column; gap:6px; }
 
@@ -84,7 +84,7 @@ button{ width:100%; padding:12px; background:linear-gradient(90deg,#ef233c,#ff4d
 <input id="s1" placeholder="Score 1">
 <input id="s2" placeholder="Score 2"><select id="matchday">
 <option value="">Select Match Day</option>
-<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option>
+<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option>
 </select><div class="file-wrapper">
 <label class="file-label" for="proof">📸 Choose Screenshot</label>
 <div class="file-name" id="fileName">No file chosen</div>
@@ -95,7 +95,10 @@ button{ width:100%; padding:12px; background:linear-gradient(90deg,#ef233c,#ff4d
 </div><script>
 const ADMIN="254746496906";
 
-const teams=["JUKI NAPOLI","CKEVO","ROMTETENASI","ABDNSR","IBRAAH","ALVARO CARERAS","CHUCKUMAN","LBNMD","MUFASA","CRIEZ16","CENTRYGAMER🎮"];
+const teams=[
+"JUKI NAPOLI","CKEVO","ROMTETENASI","ABDNSR","IBRAAH","ALVARO CARERAS",
+"CHUCKUMAN","LBNMD","MUFASA","CRIEZ16","CENTRYGAMER🎮","BLACK ROSE","DERICK MULTITASKER"
+];
 
 let data={};
 teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0,form:[]});
