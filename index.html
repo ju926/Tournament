@@ -44,7 +44,9 @@ button{ padding:10px 16px; background:#ef233c; border:none; color:white; border-
 
 .match{ padding:6px 0; border-bottom:1px solid #1f2a44; }
 
-.highlight{ background:#1b263b; } </style>
+.upload-box{ display:flex; flex-direction:column; gap:10px; }
+
+.preview{ background:#111827; padding:10px; border-radius:10px; } </style>
 
 </head>
 <body><div class="topbar">
@@ -53,7 +55,8 @@ button{ padding:10px 16px; background:#ef233c; border:none; color:white; border-
 </div><div class="nav">
     <button class="active" onclick="show('standings')">Standings</button>
     <button onclick="show('fixtures')">Fixtures</button>
-    <button onclick="show('live')">Live Match</button>
+    <button onclick="show('submit')">Submit Result</button>
+    <button onclick="show('admin')">Admin Panel</button>
 </div><!-- STANDINGS --><div id="standings" class="section active">
 <h2 style="text-align:center;">League Table</h2>
 <table>
@@ -65,21 +68,26 @@ button{ padding:10px 16px; background:#ef233c; border:none; color:white; border-
 <tbody id="tableBody"></tbody>
 </table>
 </div><!-- FIXTURES --><div id="fixtures" class="section">
-<h2 style="text-align:center;">Fixture Schedule (FIFA Round Robin)</h2>
+<h2 style="text-align:center;">Fixture Schedule</h2>
 <div class="card">
 <button onclick="generateFixtures()">Generate Season</button>
 </div>
 <div id="fixtureList"></div>
-</div><!-- LIVE --><div id="live" class="section">
-<h2 style="text-align:center;">Live Match Center</h2>
+</div><!-- SUBMIT RESULT (PLAYERS) --><div id="submit" class="section">
+<h2 style="text-align:center;">Submit Match Result</h2>
+<div class="card upload-box">
+<input placeholder="Your Team Name" id="t1">
+<input placeholder="Opponent Team Name" id="t2">
+<input placeholder="Your Score" id="s1">
+<input placeholder="Opponent Score" id="s2"><h3>Upload Screenshot (Proof)</h3>
+<input type="file" id="proof"><button onclick="submitResult()">Submit for Review</button>
+
+</div>
+</div><!-- ADMIN --><div id="admin" class="section">
+<h2 style="text-align:center;">Admin Review Panel</h2>
 <div class="card">
-<input id="p1" placeholder="Team 1">
-<input id="s1" placeholder="Score">
-VS
-<input id="s2" placeholder="Score">
-<input id="p2" placeholder="Team 2">
-<br>
-<button onclick="addResult()">Update Score (Admin Only)</button>
+<p>Submitted results will appear here (mock system)</p>
+<div id="adminList"></div>
 </div>
 </div><script>
 const ADMIN_PASSWORD="1234";
@@ -89,12 +97,10 @@ const teams=[
 "CHUCKUMAN","LBNMD","MUFASA","CRIEZ16","CENTRYGAMER🎮"
 ];
 
-function stats(){return{P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0}};
-
 let players={};
-teams.forEach(t=>players[t]=stats());
+teams.forEach(t=>players[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0});
 
-let fixtures=[];
+let submissions=[];
 
 function show(id){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -103,44 +109,73 @@ function show(id){
     event.target.classList.add('active');
 }
 
-function addResult(){
-    const pass=prompt("Admin password");
-    if(pass!==ADMIN_PASSWORD){alert("Denied");return;}
+function submitResult(){
+    let data={
+        t1:document.getElementById("t1").value,
+        t2:document.getElementById("t2").value,
+        s1:document.getElementById("s1").value,
+        s2:document.getElementById("s2").value,
+        proof:document.getElementById("proof").files[0]?.name || "No image",
+        status:"Pending"
+    };
 
-    let p1=document.getElementById("p1").value;
-    let p2=document.getElementById("p2").value;
-    let s1=Number(document.getElementById("s1").value);
-    let s2=Number(document.getElementById("s2").value);
+    submissions.push(data);
+    alert("Submitted! Waiting for admin approval.");
+    renderAdmin();
+}
 
-    if(!players[p1]||!players[p2]) return alert("Invalid");
+function renderAdmin(){
+    let box=document.getElementById("adminList");
+    box.innerHTML="";
 
-    players[p1].P++;players[p2].P++;
-    players[p1].GF+=s1;players[p1].GA+=s2;
-    players[p2].GF+=s2;players[p2].GA+=s1;
+    submissions.forEach((s,i)=>{
+        box.innerHTML+=`
+        <div class='preview'>
+        <b>${s.t1} ${s.s1} - ${s.s2} ${s.t2}</b><br>
+        Proof: ${s.proof}<br>
+        Status: ${s.status}<br>
+        <button onclick="approve(${i})">Approve</button>
+        </div>
+        `;
+    });
+}
 
-    if(s1>s2){players[p1].W++;players[p1].Pts+=3;players[p2].L++;}
-    else if(s2>s1){players[p2].W++;players[p2].Pts+=3;players[p1].L++;}
-    else{players[p1].D++;players[p2].D++;players[p1].Pts++;players[p2].Pts++;}
+function approve(i){
+    let m=submissions[i];
+
+    let p1=players[m.t1];
+    let p2=players[m.t2];
+
+    if(!p1||!p2){alert("Invalid teams");return;}
+
+    let s1=Number(m.s1);
+    let s2=Number(m.s2);
+
+    p1.P++;p2.P++;
+    p1.GF+=s1;p1.GA+=s2;
+    p2.GF+=s2;p2.GA+=s1;
+
+    if(s1>s2){p1.W++;p2.L++;p1.Pts+=3;}
+    else if(s2>s1){p2.W++;p1.L++;p2.Pts+=3;}
+    else{p1.D++;p2.D++;p1.Pts++;p2.Pts++;}
+
+    m.status="Approved";
 
     render();
+    renderAdmin();
 }
 
 function render(){
     let body=document.getElementById("tableBody");
     body.innerHTML="";
 
-    let sorted=Object.entries(players).sort((a,b)=>{
-        let A=a[1],B=b[1];
-        let gdA=A.GF-A.GA;
-        let gdB=B.GF-B.GA;
-        return B.Pts-A.Pts || gdB-gdA || B.GF-A.GF;
-    });
+    let sorted=Object.entries(players).sort((a,b)=>b[1].Pts-a[1].Pts);
 
-    sorted.forEach(([name,s])=>{
+    sorted.forEach(([n,s])=>{
         let gd=s.GF-s.GA;
         body.innerHTML+=`
-        <tr ${sorted[0][0]===name?'class="highlight"':''}>
-        <td><div class='player'><div class='avatar'>${name[0]}</div>${name}</div></td>
+        <tr>
+        <td><div class='player'><div class='avatar'>${n[0]}</div>${n}</div></td>
         <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
         <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td><b>${s.Pts}</b></td>
         </tr>`;
