@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malone League</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    text-align: center;
+}h1 { margin-top: 20px; }
+
+.table-container { display: flex; justify-content: center; margin-top: 30px; }
+
+table { border-collapse: collapse; width: 90%; max-width: 800px; background: #334155; border-radius: 10px; overflow: hidden; }
+
+th, td { padding: 10px; border-bottom: 1px solid #475569; }
+
+th { background: #1e293b; }
+
+input { width: 40px; }
+
+button { margin-top: 20px; padding: 10px 20px; border: none; background: #22c55e; color: white; border-radius: 8px; cursor: pointer; } </style>
+
+</head>
+<body><h1>🏆 Malone League Table</h1>
+<p>Enter match results to update standings</p><div class="table-container">
+<table id="leagueTable">
+<thead>
+<tr>
+<th>Player</th>
+<th>P</th>
+<th>W</th>
+<th>D</th>
+<th>L</th>
+<th>Pts</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div><h2>Enter Results</h2><div>
+<input id="p1" placeholder="Player 1">
+<input id="s1" placeholder="Score">
+vs
+<input id="s2" placeholder="Score">
+<input id="p2" placeholder="Player 2">
+</div><button onclick="addResult()">Add Result</button>
+
+<script>
+let players = {
+"Abdnsr": stats(),
+"alvaro careras": stats(),
+"chuckuman": stats(),
+"ckevo": stats(),
+"IBRAAH": stats(),
+"juki napoli": stats(),
+"Malone": stats(),
+"ROMTETENASI": stats()
+};
+
+function stats() {
+    return {P:0, W:0, D:0, L:0, Pts:0};
+}
+
+function addResult() {
+    let p1 = document.getElementById("p1").value;
+    let p2 = document.getElementById("p2").value;
+    let s1 = Number(document.getElementById("s1").value);
+    let s2 = Number(document.getElementById("s2").value);
+
+    if (!players[p1] || !players[p2]) {
+        alert("Invalid player names");
+        return;
+    }
+
+    players[p1].P++;
+    players[p2].P++;
+
+    if (s1 > s2) {
+        players[p1].W++; players[p1].Pts += 3;
+        players[p2].L++;
+    } else if (s2 > s1) {
+        players[p2].W++; players[p2].Pts += 3;
+        players[p1].L++;
+    } else {
+        players[p1].D++; players[p2].D++;
+        players[p1].Pts++; players[p2].Pts++;
+    }
+
+    renderTable();
+}
+
+function renderTable() {
+    let tbody = document.querySelector("tbody");
+    tbody.innerHTML = "";
+
+    let sorted = Object.entries(players).sort((a,b)=>b[1].Pts - a[1].Pts);
+
+    for (let [name, s] of sorted) {
+        tbody.innerHTML += `
+        <tr>
+        <td>${name}</td>
+        <td>${s.P}</td>
+        <td>${s.W}</td>
+        <td>${s.D}</td>
+        <td>${s.L}</td>
+        <td>${s.Pts}</td>
+        </tr>`;
+    }
+}
+
+renderTable();
+</script></body>
+</html>
