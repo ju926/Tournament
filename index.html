@@ -2,51 +2,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Sports App - League</title>
+<title>FIFA Style League System</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 body{
     margin:0;
     font-family:Inter,sans-serif;
-    background:#0a0f1c;
+    background:#070b14;
     color:white;
-}.topbar{ background:#e10600; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-weight:700; }
+}.topbar{ background:linear-gradient(90deg,#d90429,#ef233c); padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-weight:800; }
 
-.live{ background:white; color:#e10600; padding:4px 10px; border-radius:20px; font-size:12px; }
+.live{ background:white; color:#d90429; padding:4px 10px; border-radius:20px; font-size:12px; }
 
 .nav{ display:flex; justify-content:center; gap:15px; background:#0f172a; padding:10px; border-bottom:1px solid #1f2a44; }
 
-.nav button{ background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:600; }
+.nav button{ background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:700; }
 
-.nav button.active{ color:white; border-bottom:2px solid #e10600; }
+.nav button.active{ color:white; border-bottom:2px solid #ef233c; }
 
 .section{display:none;padding:20px;} .section.active{display:block;}
 
-table{ width:95%; max-width:1000px; margin:auto; border-collapse:collapse; background:#111827; border-radius:10px; overflow:hidden; }
+.card{ background:#0f172a; padding:15px; margin:10px auto; max-width:1000px; border-radius:10px; }
 
-th{ background:#1f2937; padding:12px; font-size:12px; color:#9ca3af; }
+table{ width:95%; max-width:1100px; margin:auto; border-collapse:collapse; background:#0f172a; border-radius:10px; overflow:hidden; }
+
+th{ background:#111827; padding:12px; font-size:12px; color:#9ca3af; }
 
 td{ padding:12px; text-align:center; border-bottom:1px solid #1f2a44; }
 
-/* FIX ALIGNMENT */ td:first-child{ text-align:left; padding-left:20px; }
+td:first-child{ text-align:left; padding-left:20px; }
 
 .player{ display:flex; gap:10px; align-items:center; }
 
-.avatar{ width:28px;height:28px; border-radius:50%; background:#e10600; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.avatar{ width:28px;height:28px; border-radius:50%; background:#ef233c; display:flex; align-items:center; justify-content:center; font-weight:800; }
 
-.card{ background:#111827; padding:15px; margin:10px auto; max-width:800px; border-radius:10px; }
+input{ padding:8px; margin:5px; border-radius:6px; border:none; }
 
-.day-title{ color:#e10600; font-weight:700; margin-top:15px; }
+button{ padding:10px 16px; background:#ef233c; border:none; color:white; border-radius:8px; cursor:pointer; font-weight:800; }
 
-.match{ padding:8px 0; border-bottom:1px solid #1f2a44; }
+.matchday{ margin-top:15px; color:#ef233c; font-weight:800; }
 
-input{ padding:8px; margin:5px; border:none; border-radius:6px; }
+.match{ padding:6px 0; border-bottom:1px solid #1f2a44; }
 
-button{ padding:10px 16px; background:#e10600; border:none; color:white; border-radius:8px; cursor:pointer; font-weight:700; } </style>
+.highlight{ background:#1b263b; } </style>
 
 </head>
 <body><div class="topbar">
-    <div>⚽ PRO SPORTS LEAGUE</div>
+    <div>⚽ FIFA STYLE LEAGUE SYSTEM</div>
     <div class="live">LIVE</div>
 </div><div class="nav">
     <button class="active" onclick="show('standings')">Standings</button>
@@ -57,47 +59,42 @@ button{ padding:10px 16px; background:#e10600; border:none; color:white; border-
 <table>
 <thead>
 <tr>
-<th>Player</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th>
+<th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
 </tr>
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
 </div><!-- FIXTURES --><div id="fixtures" class="section">
-<h2 style="text-align:center;">Fixtures (Daily Schedule)</h2>
-<div id="fixtureList" class="card"></div>
-<button onclick="generateFixtures()">Generate Full Season</button>
+<h2 style="text-align:center;">Fixture Schedule (FIFA Round Robin)</h2>
+<div class="card">
+<button onclick="generateFixtures()">Generate Season</button>
+</div>
+<div id="fixtureList"></div>
 </div><!-- LIVE --><div id="live" class="section">
 <h2 style="text-align:center;">Live Match Center</h2>
 <div class="card">
-<input id="p1" placeholder="Player 1">
+<input id="p1" placeholder="Team 1">
 <input id="s1" placeholder="Score">
 VS
 <input id="s2" placeholder="Score">
-<input id="p2" placeholder="Player 2">
+<input id="p2" placeholder="Team 2">
 <br>
-<button onclick="addResult()">Update Live Score (Admin Only)</button>
+<button onclick="addResult()">Update Score (Admin Only)</button>
 </div>
 </div><script>
-const ADMIN_PASSWORD = "1234";
+const ADMIN_PASSWORD="1234";
 
-const teams = [
-"KUKI NAPOLI",
-"CKEVO",
-"ROMTETENASI",
-"ABDNSR",
-"IBRAAH",
-"ALVARO CARERAS",
-"CHUCKUMAN",
-"LBNMD",
-"MUFASA",
-"CRIEZ16",
-"CENTRYGAMER🎮"
+const teams=[
+"KUKI NAPOLI","CKEVO","ROMTETENASI","ABDNSR","IBRAAH","ALVARO CARERAS",
+"CHUCKUMAN","LBNMD","MUFASA","CRIEZ16","CENTRYGAMER🎮"
 ];
 
 function stats(){return{P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0}};
 
 let players={};
 teams.forEach(t=>players[t]=stats());
+
+let fixtures=[];
 
 function show(id){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -107,7 +104,7 @@ function show(id){
 }
 
 function addResult(){
-    const pass=prompt("Admin password:");
+    const pass=prompt("Admin password");
     if(pass!==ADMIN_PASSWORD){alert("Denied");return;}
 
     let p1=document.getElementById("p1").value;
@@ -132,44 +129,48 @@ function render(){
     let body=document.getElementById("tableBody");
     body.innerHTML="";
 
-    let sorted=Object.entries(players).sort((a,b)=>b[1].Pts-a[1].Pts);
+    let sorted=Object.entries(players).sort((a,b)=>{
+        let A=a[1],B=b[1];
+        let gdA=A.GF-A.GA;
+        let gdB=B.GF-B.GA;
+        return B.Pts-A.Pts || gdB-gdA || B.GF-A.GF;
+    });
 
-    for(let [n,s] of sorted){
+    sorted.forEach(([name,s])=>{
+        let gd=s.GF-s.GA;
         body.innerHTML+=`
-        <tr>
-        <td><div class='player'><div class='avatar'>${n[0]}</div>${n}</div></td>
-        <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td><b>${s.Pts}</b></td>
+        <tr ${sorted[0][0]===name?'class="highlight"':''}>
+        <td><div class='player'><div class='avatar'>${name[0]}</div>${name}</div></td>
+        <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
+        <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td><b>${s.Pts}</b></td>
         </tr>`;
-    }
+    });
 }
 
 function generateFixtures(){
-    let container=document.getElementById("fixtureList");
-    container.innerHTML="";
+    let list=[...teams];
+    if(list.length%2) list.push("BYE");
 
-    let matches=[];
-    for(let i=0;i<teams.length;i++){
-        for(let j=i+1;j<teams.length;j++){
-            matches.push(teams[i]+" vs "+teams[j]);
+    let n=list.length;
+    let rounds=[];
+
+    for(let r=0;r<n-1;r++){
+        let round=[];
+        for(let i=0;i<n/2;i++){
+            let a=list[i],b=list[n-1-i];
+            if(a!=="BYE"&&b!=="BYE") round.push(a+" vs "+b);
         }
+        rounds.push(round);
+        list.splice(1,0,list.pop());
     }
 
-    let today=new Date();
-    let dayIndex=0;
-    let groupSize=5;
+    let c=document.getElementById("fixtureList");
+    c.innerHTML="";
 
-    for(let i=0;i<matches.length;i+=groupSize){
-        let date=new Date();
-        date.setDate(today.getDate()+dayIndex);
-
-        container.innerHTML+=`<div class='day-title'>DAY ${dayIndex+1} - ${date.toDateString()}</div>`;
-
-        matches.slice(i,i+groupSize).forEach(m=>{
-            container.innerHTML+=`<div class='match'>⚽ ${m}</div>`;
-        });
-
-        dayIndex++;
-    }
+    rounds.forEach((r,i)=>{
+        c.innerHTML+=`<div class='matchday'>MATCHDAY ${i+1}</div>`;
+        r.forEach(m=>c.innerHTML+=`<div class='match'>⚽ ${m}</div>`);
+    });
 }
 
 render();
