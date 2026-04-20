@@ -5,93 +5,77 @@
 <title>ELITE EFOOTBALL LEAGUE PRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-body{
-    margin:0;
-    font-family:Inter,sans-serif;
-    background: radial-gradient(circle at top,#0b1220,#05070f);
-    color:white;
-}.topbar{ background: linear-gradient(90deg,#d90429,#ef233c); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; font-weight:900; }
-
-.live{ background:white; color:#d90429; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:800; animation:pulse 1.5s infinite; }
-
-@keyframes pulse{ 0%{transform:scale(1);opacity:1;} 50%{transform:scale(1.05);opacity:0.7;} 100%{transform:scale(1);opacity:1;} }
-
-.nav{ display:flex; justify-content:center; gap:20px; background:#0c1426; padding:12px; border-bottom:1px solid #1f2a44; }
-
-.nav button{ background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:800; padding:10px 14px; border-radius:10px; }
-
-.nav button.active{ background:#ef233c; color:white; }
-
-.section{display:none;padding:20px;} .section.active{display:block;}
-
-.card{ background:rgba(15,23,42,0.9); padding:18px; margin:15px auto; max-width:1000px; border-radius:14px; }
-
-table{ width:100%; border-collapse:collapse; background:#0f172a; border-radius:10px; overflow:hidden; }
-
-th{ background:#111827; padding:12px; color:#9ca3af; font-size:12px; }
-
-td{ padding:12px; text-align:center; border-bottom:1px solid #1f2a44; }
-
+body{margin:0;font-family:Inter,sans-serif;background: radial-gradient(circle at top,#0b1220,#05070f);color:white;}
+.topbar{background: linear-gradient(90deg,#d90429,#ef233c);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:900;}
+.live{background:white;color:#d90429;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:0.7;}100%{transform:scale(1);opacity:1;}}
+.nav{display:flex;justify-content:center;gap:20px;background:#0c1426;padding:12px;border-bottom:1px solid #1f2a44;}
+.nav button{background:none;border:none;color:#94a3b8;cursor:pointer;font-weight:800;padding:10px 14px;border-radius:10px;}
+.nav button.active{background:#ef233c;color:white;}
+.section{display:none;padding:20px;}
+.section.active{display:block;}
+.card{background:rgba(15,23,42,0.9);padding:18px;margin:15px auto;max-width:1000px;border-radius:14px;}
+table{width:100%;border-collapse:collapse;background:#0f172a;border-radius:10px;overflow:hidden;}
+th{background:#111827;padding:12px;color:#9ca3af;font-size:12px;}
+td{padding:12px;text-align:center;border-bottom:1px solid #1f2a44;}
 td:first-child{text-align:left;}
-
-.player{display:flex;gap:10px;align-items:center;font-weight:700;} .avatar{width:28px;height:28px;border-radius:50%;background:#ef233c;display:flex;align-items:center;justify-content:center;font-weight:900;}
-
 .form{letter-spacing:2px;font-weight:900;}
-
-.matchday{color:#ff4d6d;font-weight:900;margin-top:15px;} .match{background:#111827;padding:10px;margin:6px 0;border-radius:8px;border-left:3px solid #ef233c;}
-
-input,select{ width:100%; padding:10px; margin:6px 0; border:none; border-radius:8px; background:#0b1220; color:white; outline:none; }
-
-button{ width:100%; padding:12px; background:linear-gradient(90deg,#ef233c,#ff4d6d); border:none; color:white; font-weight:900; border-radius:10px; cursor:pointer; }
-
+.matchday{color:#ff4d6d;font-weight:900;margin-top:15px;}
+.match{background:#111827;padding:10px;margin:6px 0;border-radius:8px;border-left:3px solid #ef233c;}
+input,select{width:100%;padding:10px;margin:6px 0;border:none;border-radius:8px;background:#0b1220;color:white;outline:none;}
+button{width:100%;padding:12px;background:linear-gradient(90deg,#ef233c,#ff4d6d);border:none;color:white;font-weight:900;border-radius:10px;cursor:pointer;}
 input[type=file]{display:none;}
-
-.file-wrapper{ display:flex; flex-direction:column; gap:6px; }
-
-.file-label{ display:block; padding:12px; border:2px dashed #ef233c; border-radius:10px; text-align:center; cursor:pointer; color:#ff4d6d; font-weight:800; background:#0b1220; }
-
-.file-name{ font-size:12px; color:#9ca3af; text-align:center; }
-
+.file-wrapper{display:flex;flex-direction:column;gap:6px;}
+.file-label{display:block;padding:12px;border:2px dashed #ef233c;border-radius:10px;text-align:center;cursor:pointer;color:#ff4d6d;font-weight:800;background:#0b1220;}
+.file-name{font-size:12px;color:#9ca3af;text-align:center;}
+.history-item{background:#111827;padding:10px;margin:6px 0;border-radius:10px;border-left:3px solid #22c55e;}
 </style>
 </head>
 <body><div class="topbar">
-    <div>⚽ ELITE EFOOTBALL LEAGUE PRO</div>
-    <div class="live">LIVE</div>
+  <div>⚽ ELITE EFOOTBALL LEAGUE PRO</div>
+  <div class="live">LIVE</div>
 </div><div class="nav">
-    <button class="active" onclick="show('standings')">Standings</button>
-    <button onclick="show('fixtures')">Fixtures</button>
-    <button onclick="show('submit')">Submit</button>
+  <button class="active" onclick="show('standings', event)">Standings</button>
+  <button onclick="show('fixtures', event)">Fixtures</button>
+  <button onclick="show('submit', event)">Submit</button>
+  <button onclick="show('history', event)">History</button>
 </div><div id="standings" class="section active">
-<div class="card">
-<table>
-<thead>
-<tr>
-<th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>
-</tr>
-</thead>
-<tbody id="tableBody"></tbody>
-</table>
-</div>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 </div><div id="fixtures" class="section">
-<div class="card">
-<button onclick="generateFixtures()">Generate Season</button>
-</div>
-<div class="card" id="fixtureList"></div>
+  <div class="card">
+    <button onclick="generateFixtures()">Generate Season</button>
+  </div>
+  <div class="card" id="fixtureList"></div>
 </div><div id="submit" class="section">
-<div class="card">
-<input id="t1" placeholder="Team 1">
-<input id="t2" placeholder="Team 2">
-<input id="s1" placeholder="Score 1">
-<input id="s2" placeholder="Score 2"><select id="matchday">
-<option value="">Select Match Day</option>
-<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option>
-</select><div class="file-wrapper">
-<label class="file-label" for="proof">📸 Choose Screenshot</label>
-<div class="file-name" id="fileName">No file chosen</div>
-<input type="file" id="proof" onchange="document.getElementById('fileName').innerText=this.files[0]?this.files[0].name:'No file chosen'">
-</div><button onclick="sendWhatsApp()">Send to WhatsApp</button>
+  <div class="card">
+    <input id="t1" placeholder="Team 1">
+    <input id="t2" placeholder="Team 2">
+    <input id="s1" placeholder="Score 1">
+    <input id="s2" placeholder="Score 2"><select id="matchday">
+  <option value="">Select Match Day</option>
+  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option>
+</select>
 
+<div class="file-wrapper">
+  <label class="file-label" for="proof">📸 Choose Screenshot</label>
+  <div class="file-name" id="fileName">No file chosen</div>
+  <input type="file" id="proof" onchange="document.getElementById('fileName').innerText=this.files[0]?this.files[0].name:'No file chosen'">
 </div>
+
+<button onclick="sendWhatsApp()">Send to WhatsApp</button>
+
+  </div>
+</div><div id="history" class="section">
+  <div class="card" id="historyList"></div>
 </div><script>
 const ADMIN="254746496906";
 
@@ -101,71 +85,126 @@ const teams=[
 ];
 
 let data={};
+let history=[];
 teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0,form:[]});
 
-function show(id){
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
+function show(id, e){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(e) e.target.classList.add('active');
 }
 
-function sendWhatsApp(){
-    let t1=document.getElementById("t1").value;
-    let t2=document.getElementById("t2").value;
-    let s1=document.getElementById("s1").value;
-    let s2=document.getElementById("s2").value;
-    let md=document.getElementById("matchday").value;
+function updateStats(a,b,sa,sb){
+  data[a].P++; data[b].P++;
+  data[a].GF+=sa; data[a].GA+=sb;
+  data[b].GF+=sb; data[b].GA+=sa;
 
-    let file=document.getElementById("proof").files[0];
-    let fileName=file?file.name:"No screenshot";
+  if(sa>sb){data[a].W++;data[b].L++;data[a].Pts+=3;data[a].form.unshift('W');data[b].form.unshift('L');}
+  else if(sb>sa){data[b].W++;data[a].L++;data[b].Pts+=3;data[b].form.unshift('W');data[a].form.unshift('L');}
+  else{data[a].D++;data[b].D++;data[a].Pts++;data[b].Pts++;data[a].form.unshift('D');data[b].form.unshift('D');}
 
-    let msg=`⚽ MATCH RESULT\nMD ${md}\n${t1} ${s1}-${s2} ${t2}\n📸 ${fileName}`;
-
-    window.open(`https://wa.me/${ADMIN}?text=${encodeURIComponent(msg)}`);
+  data[a].form=data[a].form.slice(0,5);
+  data[b].form=data[b].form.slice(0,5);
 }
 
 function render(){
-    let body=document.getElementById("tableBody");
-    body.innerHTML="";
+  let body=document.getElementById("tableBody");
+  body.innerHTML="";
 
-    Object.entries(data).sort((a,b)=>b[1].Pts-a[1].Pts).forEach(([n,s])=>{
-        let gd=s.GF-s.GA;
-        body.innerHTML+=`<tr>
-        <td>${n}</td>
-        <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
-        <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td>${s.Pts}</td>
-        <td>${s.form.join(' ')||"-"}</td>
-        </tr>`;
-    });
+  Object.entries(data).sort((a,b)=>b[1].Pts-a[1].Pts || (b[1].GF-b[1].GA)-(a[1].GF-a[1].GA)).forEach(([n,s])=>{
+    let gd=s.GF-s.GA;
+    body.innerHTML+=`<tr>
+      <td>${n}</td>
+      <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
+      <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td>${s.Pts}</td>
+      <td class='form'>${s.form.join(' ')||'-'}</td>
+    </tr>`;
+  });
+}
+
+function renderHistory(){
+  document.getElementById('historyList').innerHTML = history.map(x=>`<div class='history-item'>${x}</div>`).join('');
+}
+
+function seedMatchday1(){
+  const md = 1;
+  const played = new Set();
+
+  const results = [
+    ["DERICK MULTITASKER","CKEVO",1,0],
+    ["ALVARO CARERAS","MUFASA",3,0],
+    ["CENTRYGAMER🎮","ABDNSR",3,0],
+    ["BLACK ROSE","ROMTETENASI",9,0]
+  ];
+
+  // Apply played matches
+  results.forEach(([a,b,sa,sb])=>{
+    updateStats(a,b,sa,sb);
+    history.unshift(`⚽ MD ${md} — ${a} ${sa}-${sb} ${b}`);
+    played.add(a);
+    played.add(b);
+  });
+
+  // Find teams that didn't play
+  const notPlayed = teams.filter(t=>!played.has(t));
+
+  // Pair them and give 0-0 draws
+  for(let i=0;i<notPlayed.length;i+=2){
+    let a = notPlayed[i];
+    let b = notPlayed[i+1];
+    if(b){
+      updateStats(a,b,0,0);
+      history.unshift(`⚽ MD ${md} — ${a} 0-0 ${b}`);
+    }
+  }
+} — ${a} ${sa}-${sb} ${b}`);
+  });
+}
+
+function sendWhatsApp(){
+  let t1=document.getElementById("t1").value;
+  let t2=document.getElementById("t2").value;
+  let s1=document.getElementById("s1").value;
+  let s2=document.getElementById("s2").value;
+  let md=document.getElementById("matchday").value;
+
+  let file=document.getElementById("proof").files[0];
+  let fileName=file?file.name:"No screenshot";
+
+  let msg=`⚽ MATCH RESULT\nMD ${md}\n${t1} ${s1}-${s2} ${t2}\n📸 ${fileName}`;
+  window.open(`https://wa.me/${ADMIN}?text=${encodeURIComponent(msg)}`);
 }
 
 function generateFixtures(){
-    let list=[...teams];
-    if(list.length%2) list.push("BYE");
+  let list=[...teams];
+  if(list.length%2) list.push("BYE");
 
-    let rounds=[];
-    let n=list.length;
+  let rounds=[];
+  let n=list.length;
 
-    for(let r=0;r<n-1;r++){
-        let round=[];
-        for(let i=0;i<n/2;i++){
-            let a=list[i],b=list[n-1-i];
-            if(a!="BYE"&&b!="BYE") round.push(a+" vs "+b);
-        }
-        rounds.push(round);
-        list.splice(1,0,list.pop());
+  for(let r=0;r<n-1;r++){
+    let round=[];
+    for(let i=0;i<n/2;i++){
+      let a=list[i],b=list[n-1-i];
+      if(a!=="BYE"&&b!=="BYE") round.push(a+" vs "+b);
     }
+    rounds.push(round);
+    list.splice(1,0,list.pop());
+  }
 
-    let c=document.getElementById("fixtureList");
-    c.innerHTML="";
+  let c=document.getElementById("fixtureList");
+  c.innerHTML="";
 
-    rounds.forEach((r,i)=>{
-        c.innerHTML+=`<div class='matchday'>MATCHDAY ${i+1}</div>`;
-        r.forEach(m=>c.innerHTML+=`<div class='match'>${m}</div>`);
-    });
+  rounds.forEach((r,i)=>{
+    c.innerHTML+=`<div class='matchday'>MATCHDAY ${i+1}</div>`;
+    r.forEach(m=>c.innerHTML+=`<div class='match'>${m}</div>`);
+  });
 }
 
+// Seed initial results and render
+seedMatchday1();
 render();
+renderHistory();
 </script></body>
 </html>
