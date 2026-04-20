@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ELITE EFOOTBALL LEAGUE</title>
+<title>ELITE EFOOTBALL LEAGUE PRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 body{
@@ -10,7 +10,7 @@ body{
     font-family:Inter,sans-serif;
     background: radial-gradient(circle at top,#0b1220,#05070f);
     color:white;
-}.topbar{ background: linear-gradient(90deg,#d90429,#ef233c); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; font-weight:900; letter-spacing:1px; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+}.topbar{ background: linear-gradient(90deg,#d90429,#ef233c); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; font-weight:900; }
 
 .live{ background:white; color:#d90429; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:800; animation:pulse 1.5s infinite; }
 
@@ -18,59 +18,47 @@ body{
 
 .nav{ display:flex; justify-content:center; gap:20px; background:#0c1426; padding:12px; border-bottom:1px solid #1f2a44; }
 
-.nav button{ background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:800; padding:10px 14px; border-radius:10px; transition:0.3s; }
+.nav button{ background:none; border:none; color:#94a3b8; cursor:pointer; font-weight:800; padding:10px 14px; border-radius:10px; }
 
-.nav button:hover{ background:#111c33; color:white; }
-
-.nav button.active{ color:white; background:#ef233c; }
+.nav button.active{ background:#ef233c; color:white; }
 
 .section{display:none;padding:20px;} .section.active{display:block;}
 
-.card{ background:rgba(15,23,42,0.9); padding:18px; margin:15px auto; max-width:1000px; border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
+.card{ background:rgba(15,23,42,0.9); padding:18px; margin:15px auto; max-width:1000px; border-radius:14px; }
 
-table{ width:95%; max-width:1100px; margin:auto; border-collapse:collapse; background:#0f172a; border-radius:12px; overflow:hidden; }
+table{ width:100%; border-collapse:collapse; background:#0f172a; border-radius:10px; overflow:hidden; }
 
-th{ background:#111827; padding:14px; font-size:12px; color:#9ca3af; text-transform:uppercase; }
+th{ background:#111827; padding:12px; color:#9ca3af; font-size:12px; }
 
-td{ padding:14px; text-align:center; border-bottom:1px solid #1f2a44; }
+td{ padding:12px; text-align:center; border-bottom:1px solid #1f2a44; }
 
-td:first-child{ text-align:left; padding-left:18px; }
+td:first-child{text-align:left;}
 
-.player{ display:flex; gap:10px; align-items:center; font-weight:700; }
+.player{display:flex;gap:10px;align-items:center;font-weight:700;} .avatar{width:28px;height:28px;border-radius:50%;background:#ef233c;display:flex;align-items:center;justify-content:center;font-weight:900;}
 
-.avatar{ width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#ef233c,#ff6b6b); display:flex; align-items:center; justify-content:center; font-weight:900; }
+.form{letter-spacing:2px;font-weight:900;}
 
-.form{ font-weight:900; letter-spacing:2px; }
+.matchday{color:#ff4d6d;font-weight:900;margin-top:15px;} .match{background:#111827;padding:10px;margin:6px 0;border-radius:8px;border-left:3px solid #ef233c;}
 
-.matchday{ margin:18px 0 8px; color:#ff4d6d; font-weight:900; font-size:14px; }
+input,select{ width:100%; padding:10px; margin:6px 0; border:none; border-radius:8px; background:#0b1220; color:white; }
 
-.match{ background:#111827; margin:8px 0; padding:12px; border-radius:10px; border-left:4px solid #ef233c; }
+button{ width:100%; padding:12px; background:linear-gradient(90deg,#ef233c,#ff4d6d); border:none; color:white; font-weight:900; border-radius:10px; cursor:pointer; }
 
-input, select{ padding:10px; margin:6px; border-radius:10px; border:none; background:#0b1220; color:white; outline:none; width:calc(100% - 20px); }
+.file-label{ display:block; padding:12px; border:2px dashed #ef233c; border-radius:10px; text-align:center; cursor:pointer; margin:6px 0; color:#ff4d6d; font-weight:800; }
 
-input:focus, select:focus{ border:1px solid #ef233c; }
-
-button{ padding:12px 18px; background:linear-gradient(90deg,#ef233c,#ff4d6d); border:none; color:white; border-radius:10px; cursor:pointer; font-weight:900; margin-top:10px; width:100%; transition:0.3s; }
-
-button:hover{ transform:scale(1.02); }
-
-/* FILE UPLOAD CUSTOM */ input[type="file"]{ display:none; }
-
-.file-label{ display:block; padding:12px; text-align:center; border-radius:10px; border:2px dashed #ef233c; background:#0b1220; cursor:pointer; margin:6px; font-weight:800; color:#ff4d6d; }
-
-.file-label:hover{ background:#111827; }
+.history-item{ background:#111827; padding:10px; margin:6px 0; border-radius:10px; border-left:3px solid #22c55e; }
 
 </style>
 </head>
 <body><div class="topbar">
-    <div>⚽ ELITE EFOOTBALL LEAGUE</div>
+    <div>⚽ ELITE EFOOTBALL LEAGUE PRO</div>
     <div class="live">LIVE</div>
 </div><div class="nav">
     <button class="active" onclick="show('standings')">Standings</button>
     <button onclick="show('fixtures')">Fixtures</button>
-    <button onclick="show('submit')">Submit Result</button>
+    <button onclick="show('submit')">Submit</button>
+    <button onclick="show('history')">History</button>
 </div><div id="standings" class="section active">
-<h2 style="text-align:center;">League Table</h2>
 <div class="card">
 <table>
 <thead>
@@ -82,33 +70,37 @@ button:hover{ transform:scale(1.02); }
 </table>
 </div>
 </div><div id="fixtures" class="section">
-<h2 style="text-align:center;">Fixture Schedule</h2>
 <div class="card">
 <button onclick="generateFixtures()">Generate Season</button>
 </div>
 <div class="card" id="fixtureList"></div>
 </div><div id="submit" class="section">
-<h2 style="text-align:center;">Submit Match Result</h2>
-<div class="card upload-box"><input id="t1" placeholder="Your Team">
-<input id="t2" placeholder="Opponent Team"><input id="s1" placeholder="Your Score">
-<input id="s2" placeholder="Opponent Score"><select id="matchday">
+<div class="card">
+<input id="t1" placeholder="Team 1">
+<input id="t2" placeholder="Team 2">
+<input id="s1" placeholder="Score 1">
+<input id="s2" placeholder="Score 2"><select id="matchday">
 <option value="">Select Match Day</option>
-<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-</select><label class="file-label" for="proof">📸 Choose Screenshot (Proof)</label> <input type="file" id="proof">
+<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+</select><label class="file-label" for="proof">📸 Upload Screenshot Proof</label> <input type="file" id="proof">
 
-<button onclick="sendWhatsApp()">Send to Admin on WhatsApp</button>
+<button onclick="submitMatch()">Send to WhatsApp</button>
 
 </div>
+</div><div id="history" class="section">
+<div class="card" id="historyList"></div>
 </div><script>
-const ADMIN_NUMBER="254746496906";
+const ADMIN="254746496906";
 
 const teams=[
 "KUKI NAPOLI","CKEVO","ROMTETENASI","ABDNSR","IBRAAH","ALVARO CARERAS",
 "CHUCKUMAN","LBNMD","MUFASA","CRIEZ16","CENTRYGAMER🎮"
 ];
 
-let players={};
-teams.forEach(t=>players[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0,form:[]});
+let data={};
+let history=[];
+
+teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0,form:[]});
 
 function show(id){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -117,52 +109,72 @@ function show(id){
     event.target.classList.add('active');
 }
 
-function sendWhatsApp(){
-    let t1=document.getElementById("t1").value;
+function submitMatch(){
+    let t1=t1=document.getElementById("t1").value;
     let t2=document.getElementById("t2").value;
-    let s1=document.getElementById("s1").value;
-    let s2=document.getElementById("s2").value;
-    let md=document.getElementById("matchday").value || "Not selected";
-
+    let s1=parseInt(document.getElementById("s1").value);
+    let s2=parseInt(document.getElementById("s2").value);
+    let md=document.getElementById("matchday").value;
     let file=document.getElementById("proof").files[0];
-    let fileName=file?file.name:"No screenshot";
 
-    let msg=`⚽ ELITE MATCH RESULT\nMatch Day: ${md}\n\n${t1} ${s1} - ${s2} ${t2}\n📸 Proof: ${fileName}`;
+    if(!t1||!t2||isNaN(s1)||isNaN(s2)) return alert("Fill all fields");
 
-    let url=`https://wa.me/${ADMIN_NUMBER}?text=${encodeURIComponent(msg)}`;
-    window.open(url,"_blank");
+    updateStats(t1,t2,s1,s2);
+
+    let msg=`⚽ MATCH RESULT\nMD ${md}\n${t1} ${s1}-${s2} ${t2}`;
+
+    history.unshift(msg);
+    renderHistory();
+    render();
+
+    window.open(`https://wa.me/${ADMIN}?text=${encodeURIComponent(msg)}`);
+}
+
+function updateStats(a,b,sa,sb){
+    data[a].P++; data[b].P++;
+    data[a].GF+=sa; data[a].GA+=sb;
+    data[b].GF+=sb; data[b].GA+=sa;
+
+    if(sa>sb){data[a].W++;data[b].L++;data[a].Pts+=3;data[a].form.unshift("W");data[b].form.unshift("L");}
+    else if(sb>sa){data[b].W++;data[a].L++;data[b].Pts+=3;data[b].form.unshift("W");data[a].form.unshift("L");}
+    else{data[a].D++;data[b].D++;data[a].Pts++;data[b].Pts++;data[a].form.unshift("D");data[b].form.unshift("D");}
+
+    data[a].form=data[a].form.slice(0,5);
+    data[b].form=data[b].form.slice(0,5);
 }
 
 function render(){
     let body=document.getElementById("tableBody");
     body.innerHTML="";
 
-    let sorted=Object.entries(players).sort((a,b)=>b[1].Pts-a[1].Pts);
-
-    sorted.forEach(([n,s])=>{
+    Object.entries(data).sort((a,b)=>b[1].Pts-a[1].Pts).forEach(([n,s])=>{
         let gd=s.GF-s.GA;
-        body.innerHTML+=`
-        <tr>
-        <td><div class='player'><div class='avatar'>${n[0]}</div>${n}</div></td>
+        body.innerHTML+=`<tr>
+        <td>${n}</td>
         <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
-        <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td><b>${s.Pts}</b></td>
-        <td class='form'>${s.form.join(' ')||'-'}</td>
+        <td>${s.GF}</td><td>${s.GA}</td><td>${gd}</td><td>${s.Pts}</td>
+        <td>${s.form.join(' ')||"-"}</td>
         </tr>`;
     });
+}
+
+function renderHistory(){
+    let h=document.getElementById("historyList");
+    h.innerHTML=history.map(x=>`<div class='history-item'>${x}</div>`).join('');
 }
 
 function generateFixtures(){
     let list=[...teams];
     if(list.length%2) list.push("BYE");
 
-    let n=list.length;
     let rounds=[];
+    let n=list.length;
 
     for(let r=0;r<n-1;r++){
         let round=[];
         for(let i=0;i<n/2;i++){
             let a=list[i],b=list[n-1-i];
-            if(a!=="BYE"&&b!=="BYE") round.push(a+" vs "+b);
+            if(a!="BYE"&&b!="BYE") round.push(a+" vs "+b);
         }
         rounds.push(round);
         list.splice(1,0,list.pop());
@@ -173,7 +185,7 @@ function generateFixtures(){
 
     rounds.forEach((r,i)=>{
         c.innerHTML+=`<div class='matchday'>MATCHDAY ${i+1}</div>`;
-        r.forEach(m=>c.innerHTML+=`<div class='match'>⚽ ${m}</div>`);
+        r.forEach(m=>c.innerHTML+=`<div class='match'>${m}</div>`);
     });
 }
 
