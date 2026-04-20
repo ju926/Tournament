@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Sports App - Malone League</title>
+<title>Pro Sports App - League</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 body{
@@ -28,27 +28,31 @@ th{ background:#1f2937; padding:12px; font-size:12px; color:#9ca3af; }
 
 td{ padding:12px; text-align:center; border-bottom:1px solid #1f2a44; }
 
-/* FIX: proper left alignment for player names */ td:first-child{ text-align:left; padding-left:20px; }
+/* FIX ALIGNMENT */ td:first-child{ text-align:left; padding-left:20px; }
 
-.player{ display:flex; gap:10px; justify-content:flex-start; align-items:center; }
+.player{ display:flex; gap:10px; align-items:center; }
 
-.avatar{ width:28px;height:28px; border-radius:50%; background:#e10600; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+.avatar{ width:28px;height:28px; border-radius:50%; background:#e10600; display:flex; align-items:center; justify-content:center; font-weight:700; }
 
-input,select{ padding:8px; margin:5px; border-radius:6px; border:none; }
+.card{ background:#111827; padding:15px; margin:10px auto; max-width:800px; border-radius:10px; }
 
-button{ padding:10px 16px; background:#e10600; border:none; color:white; border-radius:8px; cursor:pointer; font-weight:700; }
+.day-title{ color:#e10600; font-weight:700; margin-top:15px; }
 
-.card{ background:#111827; padding:15px; margin:10px auto; max-width:700px; border-radius:10px; } </style>
+.match{ padding:8px 0; border-bottom:1px solid #1f2a44; }
+
+input{ padding:8px; margin:5px; border:none; border-radius:6px; }
+
+button{ padding:10px 16px; background:#e10600; border:none; color:white; border-radius:8px; cursor:pointer; font-weight:700; } </style>
 
 </head>
 <body><div class="topbar">
-    <div>⚽ PRO SPORTS APP</div>
+    <div>⚽ PRO SPORTS LEAGUE</div>
     <div class="live">LIVE</div>
 </div><div class="nav">
     <button class="active" onclick="show('standings')">Standings</button>
     <button onclick="show('fixtures')">Fixtures</button>
     <button onclick="show('live')">Live Match</button>
-</div><div id="standings" class="section active">
+</div><!-- STANDINGS --><div id="standings" class="section active">
 <h2 style="text-align:center;">League Table</h2>
 <table>
 <thead>
@@ -58,11 +62,11 @@ button{ padding:10px 16px; background:#e10600; border:none; color:white; border-
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
-</div><div id="fixtures" class="section">
-<h2 style="text-align:center;">Fixtures</h2>
+</div><!-- FIXTURES --><div id="fixtures" class="section">
+<h2 style="text-align:center;">Fixtures (Daily Schedule)</h2>
 <div id="fixtureList" class="card"></div>
-<button onclick="generateFixtures()">Generate Fixtures</button>
-</div><div id="live" class="section">
+<button onclick="generateFixtures()">Generate Full Season</button>
+</div><!-- LIVE --><div id="live" class="section">
 <h2 style="text-align:center;">Live Match Center</h2>
 <div class="card">
 <input id="p1" placeholder="Player 1">
@@ -76,20 +80,24 @@ VS
 </div><script>
 const ADMIN_PASSWORD = "1234";
 
+const teams = [
+"KUKI NAPOLI",
+"CKEVO",
+"ROMTETENASI",
+"ABDNSR",
+"IBRAAH",
+"ALVARO CARERAS",
+"CHUCKUMAN",
+"LBNMD",
+"MUFASA",
+"CRIEZ16",
+"CENTRYGAMER🎮"
+];
+
 function stats(){return{P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0}};
 
-let players={
-"criez16":stats(),
-"juki napoli":stats(),
-"ckevo":stats(),
-"ROMTETENASI":stats(),
-"Abdnsr":stats(),
-"IBRAAH. 0746521948":stats(),
-"alvaro careras":stats(),
-"chuckuman":stats(),
-"IbnMd":stats(),
-"mufasa":stats()
-};
+let players={};
+teams.forEach(t=>players[t]=stats());
 
 function show(id){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -99,22 +107,22 @@ function show(id){
 }
 
 function addResult(){
-    const pass = prompt("Enter admin password:");
-    if(pass !== ADMIN_PASSWORD){alert("Access denied");return;}
+    const pass=prompt("Admin password:");
+    if(pass!==ADMIN_PASSWORD){alert("Denied");return;}
 
     let p1=document.getElementById("p1").value;
     let p2=document.getElementById("p2").value;
     let s1=Number(document.getElementById("s1").value);
     let s2=Number(document.getElementById("s2").value);
 
-    if(!players[p1]||!players[p2]) return alert("Invalid player");
+    if(!players[p1]||!players[p2]) return alert("Invalid");
 
     players[p1].P++;players[p2].P++;
     players[p1].GF+=s1;players[p1].GA+=s2;
     players[p2].GF+=s2;players[p2].GA+=s1;
 
-    if(s1>s2){players[p1].W++;players[p2].L++;players[p1].Pts+=3;}
-    else if(s2>s1){players[p2].W++;players[p1].L++;players[p2].Pts+=3;}
+    if(s1>s2){players[p1].W++;players[p1].Pts+=3;players[p2].L++;}
+    else if(s2>s1){players[p2].W++;players[p2].Pts+=3;players[p1].L++;}
     else{players[p1].D++;players[p2].D++;players[p1].Pts++;players[p2].Pts++;}
 
     render();
@@ -124,35 +132,44 @@ function render(){
     let body=document.getElementById("tableBody");
     body.innerHTML="";
 
-    let sorted=Object.entries(players)
-    .sort((a,b)=> b[1].Pts - a[1].Pts || (b[1].GF-b[1].GA)-(a[1].GF-a[1].GA));
+    let sorted=Object.entries(players).sort((a,b)=>b[1].Pts-a[1].Pts);
 
-    for(let [name,s] of sorted){
-        let initial=name.charAt(0).toUpperCase();
+    for(let [n,s] of sorted){
         body.innerHTML+=`
         <tr>
-        <td><div class='player'><div class='avatar'>${initial}</div>${name}</div></td>
-        <td>${s.P}</td>
-        <td>${s.W}</td>
-        <td>${s.D}</td>
-        <td>${s.L}</td>
-        <td><b>${s.Pts}</b></td>
+        <td><div class='player'><div class='avatar'>${n[0]}</div>${n}</div></td>
+        <td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td><b>${s.Pts}</b></td>
         </tr>`;
     }
 }
 
 function generateFixtures(){
-    let keys=Object.keys(players);
-    let fixtures=[];
+    let container=document.getElementById("fixtureList");
+    container.innerHTML="";
 
-    for(let i=0;i<keys.length;i++){
-        for(let j=i+1;j<keys.length;j++){
-            fixtures.push(keys[i]+" vs "+keys[j]);
+    let matches=[];
+    for(let i=0;i<teams.length;i++){
+        for(let j=i+1;j<teams.length;j++){
+            matches.push(teams[i]+" vs "+teams[j]);
         }
     }
 
-    document.getElementById("fixtureList").innerHTML=
-    fixtures.map(f=>"⚽ "+f).join("<br>");
+    let today=new Date();
+    let dayIndex=0;
+    let groupSize=5;
+
+    for(let i=0;i<matches.length;i+=groupSize){
+        let date=new Date();
+        date.setDate(today.getDate()+dayIndex);
+
+        container.innerHTML+=`<div class='day-title'>DAY ${dayIndex+1} - ${date.toDateString()}</div>`;
+
+        matches.slice(i,i+groupSize).forEach(m=>{
+            container.innerHTML+=`<div class='match'>⚽ ${m}</div>`;
+        });
+
+        dayIndex++;
+    }
 }
 
 render();
