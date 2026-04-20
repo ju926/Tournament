@@ -10,7 +10,7 @@ h1{background:linear-gradient(90deg,#ef233c,#ff4d6d);padding:15px;text-align:cen
 
 .card{background:#111;padding:15px;margin:10px 0;border-radius:10px;}
 
-/* TABLE */ table{width:100%;border-collapse:collapse;} th,td{padding:10px;border-bottom:1px solid #333;text-align:center;white-space:nowrap;} td:first-child{text-align:left;min-width:180px;}
+table{width:100%;border-collapse:collapse;} th,td{padding:10px;border-bottom:1px solid #333;text-align:center;white-space:nowrap;} td:first-child{text-align:left;min-width:180px;}
 
 .match{background:#1a1a1a;padding:10px;margin:5px 0;border-left:3px solid #ef233c;border-radius:6px;} .matchday-title{color:#ff4d6d;font-weight:bold;margin-top:10px;}
 
@@ -44,9 +44,25 @@ button.main{background:linear-gradient(90deg,#ef233c,#ff4d6d);color:white;border
 </div>
 </div><!-- FIXTURES --><div id="fixtures" class="section">
 <div class="card">
-<button class="main" onclick="generateFixtures()">Generate FULL Season Fixtures</button>
-</div>
-<div id="fixtureList" class="card"></div>
+<button class="main" onclick="generateFixtures()">Generate Season Fixtures</button>
+</div><div class="card">
+<label>📅 Select Matchday</label>
+<select id="mdSelect" onchange="renderFixtures()">
+<option value="1">Matchday 1</option>
+<option value="2">Matchday 2</option>
+<option value="3">Matchday 3</option>
+<option value="4">Matchday 4</option>
+<option value="5">Matchday 5</option>
+<option value="6">Matchday 6</option>
+<option value="7">Matchday 7</option>
+<option value="8">Matchday 8</option>
+<option value="9">Matchday 9</option>
+<option value="10">Matchday 10</option>
+<option value="11">Matchday 11</option>
+<option value="12">Matchday 12</option>
+<option value="13">Matchday 13</option>
+</select>
+</div><div id="fixtureList" class="card"></div>
 </div><!-- SUBMIT --><div id="submit" class="section">
 <div class="card">
 <input id="t1" placeholder="Team 1">
@@ -76,10 +92,9 @@ const teams=[
 "DERICK MULTITASKER","HUNTER LOVE"
 ];
 
-let data={},history=[],lastPos={};
+let data={},history=[],lastPos={},fullFixtures=[];
 teams.forEach(t=>data[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0});
 
-/* FIXED RESULTS */
 let results=[
 ["DERICK MULTITASKER","CKEVO",1,0],
 ["ALVARO CARERAS","MUFASA",3,0],
@@ -90,14 +105,12 @@ let results=[
 
 function applyResults(){
 let played=new Set();
-
 results.forEach(r=>{
 let [a,b,sa,sb]=r;
 update(a,b,sa,sb,"MATCHDAY 1");
 played.add(a);played.add(b);
 });
 
-// AUTO 1-1
 let np=teams.filter(t=>!played.has(t));
 for(let i=0;i<np.length;i+=2){
 let a=np[i],b=np[i+1];
@@ -119,31 +132,22 @@ history.push(`${label}: ${a} ${sa}-${sb} ${b}`);
 
 function renderTable(){
 let t=document.getElementById("table");t.innerHTML="";
-
 let sorted=Object.entries(data)
 .sort((a,b)=>b[1].PTS-a[1].PTS || (b[1].GF-b[1].GA)-(a[1].GF-a[1].GA));
 
 sorted.forEach(([n,s],i)=>{
 let gd=s.GF-s.GA;
 let arrow="-";
-if(lastPos[n]!=null){arrow = lastPos[n]>i ? "⬆️" : lastPos[n]<i ? "⬇️" : "➖";}
+if(lastPos[n]!=null){arrow=lastPos[n]>i?"⬆️":lastPos[n]<i?"⬇️":"➖";}
 lastPos[n]=i;
-
-t.innerHTML+=`<tr>
-<td>${n}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td>
-<td>${gd}</td><td>${s.PTS}</td><td>${arrow}</td>
-</tr>`;
+t.innerHTML+=`<tr><td>${n}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${gd}</td><td>${s.PTS}</td><td>${arrow}</td></tr>`;
 });
 }
-
-/* FULL SEASON FIXTURES (HOME & AWAY) */
-let fullFixtures=[];
 
 function generateFixtures(){
 let list=[...teams];
 let rounds=[];
 let n=list.length;
-
 for(let r=0;r<n-1;r++){
 let round=[];
 for(let i=0;i<n/2;i++){
@@ -152,55 +156,22 @@ round.push(`${list[i]} vs ${list[n-1-i]}`);
 rounds.push(round);
 list.splice(1,0,list.pop());
 }
-
-let returnRounds=rounds.map(r=>r.map(m=>{
-let [a,b]=m.split(" vs ");
-return `${b} vs ${a}`;
-}));
-
-fullFixtures=[...rounds,...returnRounds];
-
+fullFixtures=rounds;
 renderFixtures();
-renderMatchdays();
 }
 
+// ONLY SHOW SELECTED MATCHDAY
 function renderFixtures(){
+if(fullFixtures.length==0) return;
+let md=document.getElementById("mdSelect").value||1;
 let box=document.getElementById("fixtureList");
 box.innerHTML="";
 
-fullFixtures.forEach((r,i)=>{
-box.innerHTML+=`<div class='match'><b>Matchday ${i+1}</b></div>`;
-r.forEach(m=>box.innerHTML+=`<div class='match'>${m}</div>`);
-});
-}
+let fixtures=fullFixtures[md-1];
+if(!fixtures) return;
 
-function renderMatchdays(){
-let f=document.getElementById("filters");
-f.innerHTML="";
-
-for(let i=1;i<=fullFixtures.length;i++){
-f.innerHTML+=`<button onclick="showMD(${i})">MD ${i}</button>`;
-}
-
-showMD(1);
-}
-
-function showMD(n){
-document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));
-
-let btn=[...document.querySelectorAll('#filters button')][n-1];
-if(btn) btn.classList.add('active');
-
-let c=document.getElementById("cards");
-c.innerHTML="";
-
-let mdMatches=history.filter(h=>h.includes("MATCHDAY 1"));
-
-c.innerHTML=`<div class='card'>
-<div class='card-title'>MATCHDAY 1</div>
-${mdMatches.map(m=>`<div class='match'>${m}</div>`).join('')}
-<div class='matchday-title'>STATUS: COMPLETED ✅</div>
-</div>`;
+box.innerHTML+=`<div class='matchday-title'>MATCHDAY ${md}</div>`;
+fixtures.forEach(m=>box.innerHTML+=`<div class='match'>${m}</div>`);
 }
 
 function send(){
@@ -219,9 +190,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')
 btn.classList.add('active');
 }
 
-applyResults();
-renderTable();
-generateFixtures();
+applyResults();renderTable();
 
 </script></body>
 </html>
